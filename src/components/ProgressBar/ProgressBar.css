@@ -1,0 +1,33 @@
+.progress-bar {
+  display: flex;
+  gap: clamp(8px, 1.5vw, 16px);
+  justify-content: center;
+  align-items: center;
+  padding: clamp(8px, 1.5vh, 16px) 0;
+}
+
+.progress-dot {
+  width: clamp(10px, 1.4vw, 18px);
+  height: clamp(10px, 1.4vw, 18px);
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  border: 2px solid var(--color-primary);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.progress-dot--done {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.progress-dot--active {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-light);
+  box-shadow: 0 0 10px var(--color-accent-light);
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--color-accent-light); }
+  50% { box-shadow: 0 0 18px var(--color-accent-light); }
+}

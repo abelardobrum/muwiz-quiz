@@ -1,0 +1,731 @@
+.fc-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #0a1a08;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.fc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(10px, 1.5vh, 20px) clamp(14px, 2.5vw, 36px);
+  border-bottom: 1px solid rgba(124, 63, 184, 0.25);
+  background: rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.fc-back {
+  font-family: var(--font-arcade);
+  font-size: clamp(9px, 1.2vw, 13px);
+  color: var(--color-text-muted);
+  padding: clamp(8px, 1vh, 12px) clamp(10px, 1.5vw, 18px);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-primary);
+  background: var(--color-surface);
+  transition: transform var(--press-duration) ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fc-back:active {
+  transform: scale(var(--press-scale));
+}
+
+.fc-title {
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.4vw, 16px);
+  color: var(--color-text);
+  text-align: center;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.fc-header-spacer {
+  flex-shrink: 0;
+  width: clamp(80px, 10vw, 130px);
+}
+
+/* ── Campo de futebol ── */
+.fc-field {
+  flex: 0 0 clamp(160px, 32vh, 320px);
+  background: repeating-linear-gradient(
+    to right,
+    #26511f 0%, #26511f 12.5%,
+    #2e5d27 12.5%, #2e5d27 25%
+  );
+  position: relative;
+  margin: clamp(6px, 1.2vh, 16px) clamp(10px, 2.5vw, 32px);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.fc-field--drop-active {
+  border-color: rgba(107, 179, 74, 0.8);
+  box-shadow: 0 0 24px rgba(89, 148, 69, 0.45);
+}
+
+/* Linhas do campo (SVG) */
+.fc-field-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fc-fl {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 0.9;
+}
+
+.fc-fl-dot {
+  fill: rgba(255, 255, 255, 0.35);
+  stroke: none;
+}
+
+/* Zonas dentro do campo */
+.fc-field-zones {
+  display: flex;
+  height: 100%;
+  padding: clamp(6px, 1vh, 12px);
+  gap: clamp(4px, 0.8vw, 10px);
+}
+
+.fc-field-zone {
+  flex: 1;
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.fc-field-zone--current {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fc-field-zone--correct {
+  border: 2px solid #6bb34a;
+  background: rgba(89, 148, 69, 0.28);
+}
+
+.fc-field-zone--wrong {
+  border: 2px solid #cc3333;
+  background: rgba(204, 51, 51, 0.2);
+  animation: zone-shake 0.4s ease-out;
+}
+
+@keyframes zone-shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.fc-field-zone-label {
+  position: absolute;
+  top: clamp(4px, 0.6vh, 8px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-arcade);
+  font-size: clamp(6px, 0.8vw, 10px);
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  padding: 0 4px;
+}
+
+.fc-field-zone-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc-field-check {
+  font-size: clamp(20px, 4vw, 44px);
+  color: #6bb34a;
+  font-weight: 900;
+  animation: check-pop 0.3s ease-out both;
+}
+
+@keyframes check-pop {
+  from { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.fc-ball {
+  font-size: clamp(18px, 3.5vw, 40px);
+  animation: ball-bounce 1s ease-in-out infinite;
+}
+
+@keyframes ball-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Goleira — CSS, encostada na borda direita do campo */
+.fc-goal {
+  position: absolute;
+  right: 0;
+  top: 40%;
+  width: clamp(12px, 2.2vw, 28px);
+  height: 20%;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-right: none;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 3px 0 0 3px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Progress dots */
+.fc-progress {
+  position: absolute;
+  bottom: clamp(4px, 0.8vh, 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(6px, 1vw, 12px);
+}
+
+.fc-progress-dot {
+  width: clamp(8px, 1.3vw, 14px);
+  height: clamp(8px, 1.3vw, 14px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.fc-progress-dot--done {
+  background: #6bb34a;
+  border-color: #6bb34a;
+}
+
+.fc-progress-dot--active {
+  background: #fff;
+  border-color: #fff;
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(255,255,255,0.6); }
+  50% { box-shadow: 0 0 14px rgba(255,255,255,0.9); }
+}
+
+/* ── Bloco de pergunta + cards ── */
+.fc-bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.5vh, 18px);
+  padding: clamp(10px, 1.8vh, 22px) clamp(14px, 2.5vw, 36px) clamp(6px, 1vh, 14px);
+  overflow: hidden;
+}
+
+.fc-zone-label {
+  font-family: var(--font-arcade);
+  font-size: clamp(9px, 1.3vw, 14px);
+  color: #6bb34a;
+  letter-spacing: 1px;
+}
+
+.fc-question-text {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 2.2vw, 26px);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+/* Cards grid */
+.fc-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(8px, 1.5vw, 18px);
+  flex: 1;
+  align-content: start;
+}
+
+.fc-cards--locked {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.fc-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1vw, 12px);
+  min-height: clamp(44px, 6vw, 80px);
+  padding: clamp(6px, 1vw, 14px) clamp(8px, 1.4vw, 18px);
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(89, 148, 69, 0.35);
+  background: rgba(20, 60, 15, 0.75);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.fc-card:active {
+  transform: scale(1.03);
+  border-color: #6bb34a;
+}
+
+.fc-card--dragging {
+  opacity: 0.35;
+  transform: scale(0.96);
+  border-color: rgba(89, 148, 69, 0.2);
+}
+
+.fc-card-icon {
+  font-size: clamp(18px, 2.8vw, 32px);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.fc-card-text {
+  font-size: clamp(12px, 1.8vw, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Hint */
+.fc-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 1.4vw, 15px);
+  color: var(--color-text-muted);
+  padding: clamp(4px, 0.6vh, 8px) 0;
+  flex-shrink: 0;
+}
+
+/* ── Resultado ── */
+.fc-result-area {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Ghost (segue o dedo — posicionado via DOM direto) ── */
+.fc-drag-ghost {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 14px);
+  padding: clamp(10px, 1.5vw, 18px) clamp(12px, 1.8vw, 22px);
+  border-radius: var(--radius-md);
+  border: 2px solid #6bb34a;
+  background: rgba(15, 50, 10, 0.96);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: clamp(12px, 1.8vw, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(89, 148, 69, 0.45);
+  transform: scale(1.06) rotate(2deg);
+}
+
+/* ── Footer ── */
+.fc-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: clamp(10px, 1.5vh, 18px) clamp(16px, 3vw, 40px);
+  background: rgba(0, 0, 0, 0.45);
+  border-top: 1px solid rgba(124, 63, 184, 0.25);
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.5vw, 15px);
+  color: var(--color-text-muted);
+  gap: 12px;
+}
+
+.fc-footer-time--urgent {
+  color: var(--color-danger);
+  animation: blink-urgent 0.5s step-end infinite;
+}
+
+@keyframes blink-urgent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Landscape (1920×1080) ── */
+@media (orientation: landscape) {
+  .fc-screen {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .fc-header {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .fc-field {
+    flex: 0 0 42%;
+    margin: clamp(8px, 1.5vh, 20px);
+    align-self: stretch;
+  }
+
+  .fc-bottom {
+    flex: 1;
+    padding: clamp(10px, 1.5vh, 20px) clamp(12px, 1.5vw, 24px);
+  }
+
+  .fc-footer {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .fc-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fc-card {
+    min-height: clamp(60px, 8vh, 100px);
+  }
+}
+
+@media (orientation: portrait) {
+  .fc-field {
+    flex: 1;
+    max-height: 48vh;
+    width: calc(100% - clamp(32px, 8vw, 96px));
+    margin: 0 auto clamp(6px, 1vw, 12px) auto;
+    align-self: center;
+  }
+
+  .fc-field-zone-label {
+    font-size: clamp(7px, 1.1vw, 13px);
+  }
+
+  .fc-ball {
+    font-size: clamp(22px, 5vw, 52px);
+  }
+
+  .fc-bottom {
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    align-self: center;
+    padding: clamp(12px, 2vw, 28px) clamp(24px, 5vw, 64px) clamp(8px, 1.5vw, 20px);
+    gap: clamp(10px, 1.8vh, 22px);
+  }
+
+  .fc-zone-label {
+    font-size: clamp(11px, 1.8vw, 18px);
+  }
+
+  .fc-question-text {
+    font-size: clamp(20px, 3.2vw, 38px);
+  }
+
+  .fc-cards {
+    flex: 1;
+    gap: clamp(10px, 2vw, 22px);
+    grid-template-rows: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .fc-card {
+    min-height: clamp(54px, 7vw, 90px);
+    padding: clamp(8px, 1.5vw, 18px) clamp(10px, 2vw, 22px);
+  }
+
+  .fc-card-icon {
+    font-size: clamp(24px, 4vw, 44px);
+  }
+
+  .fc-card-text {
+    font-size: clamp(14px, 2.5vw, 28px);
+  }
+
+  .fc-hint {
+    font-size: clamp(12px, 1.6vw, 18px);
+  }
+
+  .fc-footer {
+    font-size: clamp(11px, 1.8vw, 18px);
+    padding: clamp(12px, 2vw, 24px) clamp(24px, 5vw, 64px);
+  }
+
+  .fc-back {
+    font-size: clamp(10px, 1.5vw, 15px);
+  }
+
+  .fc-title {
+    font-size: clamp(12px, 2vw, 20px);
+  }
+}
+
+/* ── Jogadores ── */
+.fc-players-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fc-player {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: opacity 0.3s ease;
+}
+
+.fc-player-img {
+  width: clamp(80px, 14vw, 144px);
+  height: clamp(80px, 14vw, 144px);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  object-fit: cover;
+  display: block;
+}
+
+.fc-player--current .fc-player-img {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  animation: player-pulse 1s ease-in-out infinite;
+}
+
+.fc-player--correct .fc-player-img {
+  border-color: #6bb34a;
+  box-shadow: 0 0 8px rgba(107, 179, 74, 0.5);
+  animation: check-pop 0.3s ease-out both;
+}
+
+.fc-player--yellow .fc-player-img {
+  border-color: #e8a020;
+  animation: check-pop 0.3s ease-out both;
+}
+
+.fc-player--red .fc-player-img {
+  border-color: #cc3333;
+  animation: check-pop 0.3s ease-out both;
+}
+
+
+@keyframes player-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+  50%       { box-shadow: 0 0 20px rgba(255, 255, 255, 0.9); }
+}
+
+
+.fc-player-label {
+  font-family: var(--font-arcade);
+  font-size: clamp(5px, 0.7vw, 9px);
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  line-height: 1;
+}
+
+/* ── Passe (SVG) ── */
+.fc-pass-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 4;
+}
+
+.fc-pass-path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 0.7;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  stroke-linecap: round;
+  animation: pass-draw 0.65s ease-out forwards;
+}
+
+.fc-pass-path--static {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+  stroke-dashoffset: 0;
+}
+
+@keyframes pass-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Barra de energia — abaixo do campo ── */
+.fc-energy-bar {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3px, 0.5vh, 6px);
+  padding: 0 2.6rem;
+}
+
+.fc-energy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.fc-energy-label {
+  font-family: var(--font-arcade);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+}
+
+.fc-energy-pct {
+  font-family: var(--font-arcade);
+  color: #6bb34a;
+}
+
+.fc-energy-track {
+  width: 100%;
+  height: clamp(10px, 1.6vh, 20px);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  height: 30px;
+}
+
+.fc-energy-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(to right, #5a9e3a, #97C459);
+  transition: width 0.5s ease;
+  border-radius: 6px 0 0 6px;
+}
+
+.fc-energy-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* ── Overlay de cartão ── */
+.fc-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.5vh, 18px);
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 20;
+  animation: overlay-in 0.25s ease-out both;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fc-card-overlay-icon {
+  font-size: clamp(64px, 14vw, 160px);
+  animation: card-slam 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  line-height: 1;
+}
+
+@keyframes card-slam {
+  from { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.fc-card-overlay-title {
+  font-family: var(--font-arcade);
+  font-size: clamp(14px, 2.8vw, 34px);
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  animation: overlay-in 0.3s ease-out 0.2s both;
+}
+
+.fc-card-overlay--yellow .fc-card-overlay-title { color: #f0c040; }
+.fc-card-overlay--red    .fc-card-overlay-title { color: #e85555; }
+
+.fc-card-overlay-sub {
+  font-family: var(--font-body);
+  font-size: clamp(12px, 2vw, 24px);
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  animation: overlay-in 0.3s ease-out 0.35s both;
+}
+
+/* ── Campo piscando no gol ── */
+.fc-field--goal {
+  animation: field-goal-flash 0.35s ease-out 3;
+}
+
+@keyframes field-goal-flash {
+  0%, 100% { border-color: rgba(255, 255, 255, 0.15); }
+  50% {
+    border-color: rgba(107, 179, 74, 0.9);
+    box-shadow: 0 0 32px rgba(89, 148, 69, 0.7);
+  }
+}
+
+/* ── Confete ── */
+.fc-confetti-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.fc-confetti-piece {
+  position: absolute;
+  top: -10px;
+  left: var(--x);
+  width: clamp(5px, 0.8vw, 9px);
+  height: clamp(10px, 1.6vw, 18px);
+  background: var(--color);
+  border-radius: 2px;
+  animation: confetti-fall 1.8s var(--delay, 0s) ease-in both;
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(160px) rotate(540deg); opacity: 0; }
+}

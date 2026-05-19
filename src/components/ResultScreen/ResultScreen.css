@@ -1,0 +1,148 @@
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 32px);
+  width: 100%;
+  height: 100%;
+  padding: clamp(24px, 4vw, 64px);
+  animation: result-enter 0.5s ease-out both;
+}
+
+@keyframes result-enter {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.result-icon {
+  font-size: clamp(48px, 10vw, 120px);
+  animation: icon-bounce 0.6s ease-out 0.3s both;
+}
+
+@keyframes icon-bounce {
+  from { opacity: 0; transform: translateY(-30px) scale(0.5); }
+  60% { transform: translateY(8px) scale(1.1); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.result-label {
+  font-family: var(--font-arcade);
+  font-size: clamp(14px, 2.5vw, 32px);
+  text-align: center;
+  line-height: 1.6;
+  animation: result-enter 0.5s ease-out 0.2s both;
+}
+
+.result-screen--champion .result-label { color: var(--color-accent-light); text-shadow: 0 0 20px var(--color-accent); }
+.result-screen--warning .result-label { color: var(--color-warning); text-shadow: 0 0 20px rgba(232, 160, 32, 0.5); }
+.result-screen--danger .result-label { color: var(--color-danger); text-shadow: 0 0 20px rgba(204, 51, 51, 0.5); }
+
+.result-score {
+  font-family: var(--font-body);
+  font-size: clamp(16px, 2.5vw, 28px);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(12px, 2vw, 24px);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: clamp(8px, 2vh, 24px);
+}
+
+.result-btn {
+  min-height: clamp(52px, 6vh, 80px);
+  padding: clamp(12px, 1.5vh, 20px) clamp(20px, 3vw, 48px);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.8vh, 20px);
+  font-weight: 900;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform var(--press-duration) ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.result-btn:active {
+  transform: scale(var(--press-scale));
+}
+
+.result-btn--play {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow-green);
+}
+
+.result-btn--menu {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow-purple);
+}
+
+/* ── Barra de energia no resultado ── */
+.result-energy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 8px);
+  animation: result-enter 0.5s ease-out 0.4s both;
+}
+
+.result-energy-track {
+  width: clamp(160px, 30vw, 380px);
+  height: clamp(18px, 2.5vh, 30px);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-energy-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(to right, #97C459, #6bb34a);
+  transition: width 0.6s ease;
+  border-radius: 6px 0 0 6px;
+}
+
+.result-energy-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%);
+}
+
+.result-energy-pct {
+  font-family: var(--font-arcade);
+  font-size: clamp(12px, 1.8vw, 20px);
+  color: var(--color-accent-light);
+}
+
+.result-energy-label {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 1.3vw, 15px);
+  color: var(--color-text-muted);
+}
+
+@media (orientation: portrait) {
+  .result-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+  }
+  .result-btn {
+    width: 100%;
+  }
+}

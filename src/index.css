@@ -1,0 +1,65 @@
+:root {
+  --color-bg: #1a0235;
+  --color-surface: #3a066b;
+  --color-surface-alt: #4e1085;
+  --color-primary: #7c3fb8;
+  --color-accent: #599445;
+  --color-accent-light: #6bb34a;
+  --color-text: #f0eaff;
+  --color-text-muted: #9b82c0;
+  --color-success: #599445;
+  --color-danger: #cc3333;
+  --color-warning: #e8a020;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-glow-purple: 0 0 24px rgba(124, 63, 184, 0.7);
+  --shadow-glow-green: 0 0 20px rgba(89, 148, 69, 0.7);
+  --shadow-glow-danger: 0 0 20px rgba(204, 51, 51, 0.7);
+
+  --press-scale: 0.95;
+  --press-duration: 120ms;
+
+  --font-arcade: 'Press Start 2P', monospace;
+  --font-body: 'Nunito', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}

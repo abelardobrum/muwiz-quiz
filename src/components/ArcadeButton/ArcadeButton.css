@@ -1,0 +1,65 @@
+.arcade-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  min-height: clamp(60px, 7vh, 100px);
+  padding: clamp(12px, 2vh, 20px) clamp(16px, 2vw, 28px);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-primary);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.8vh, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+  transition: transform var(--press-duration) ease, box-shadow var(--press-duration) ease;
+  transform: scale(1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.arcade-btn:active {
+  transform: scale(var(--press-scale));
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.arcade-btn:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.arcade-btn--primary {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(124, 63, 184, 0.4);
+}
+
+.arcade-btn--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: var(--shadow-glow-green);
+}
+
+.arcade-btn--accent:active {
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.arcade-btn--danger {
+  border-color: var(--color-danger);
+  box-shadow: var(--shadow-glow-danger);
+}
+
+.arcade-btn--success {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: #fff;
+  box-shadow: var(--shadow-glow-green);
+}
+
+.arcade-btn--selected {
+  border-color: var(--color-accent);
+  background: rgba(89, 148, 69, 0.25);
+  box-shadow: var(--shadow-glow-green);
+}
