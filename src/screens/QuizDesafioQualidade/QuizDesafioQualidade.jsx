@@ -3,44 +3,45 @@ import QuizLayout from '../../components/QuizLayout/QuizLayout.jsx'
 import ProgressBar from '../../components/ProgressBar/ProgressBar.jsx'
 import ResultScreen from '../../components/ResultScreen/ResultScreen.jsx'
 import { questions, getResult } from '../../data/quizDesafioQualidade.js'
+import { shuffle } from '../../utils/shuffle.js'
 import './QuizDesafioQualidade.css'
 
 export default function QuizDesafioQualidade() {
   const [currentQ, setCurrentQ] = useState(0)
   const [score, setScore] = useState(0)
-  const [phase, setPhase] = useState('question') // 'question' | 'feedback' | 'result'
+  const [phase, setPhase] = useState('question')
   const [selectedAnswer, setSelectedAnswer] = useState(null)
-  const [wasCorrect, setWasCorrect] = useState(null)
   const [key, setKey] = useState(0)
+  const [shuffledQuestions, setShuffledQuestions] = useState(
+    () => questions.map(q => ({ ...q, options: shuffle(q.options) }))
+  )
 
   const handleAnswer = useCallback((option) => {
     if (phase !== 'question') return
-    const correct = option === questions[currentQ].correct
+    const correct = option === shuffledQuestions[currentQ].correct
     setSelectedAnswer(option)
-    setWasCorrect(correct)
     setPhase('feedback')
     if (correct) setScore(s => s + 1)
 
     setTimeout(() => {
-      if (currentQ + 1 >= questions.length) {
+      if (currentQ + 1 >= shuffledQuestions.length) {
         setPhase('result')
       } else {
         setCurrentQ(q => q + 1)
         setSelectedAnswer(null)
-        setWasCorrect(null)
         setPhase('question')
         setKey(k => k + 1)
       }
     }, 1400)
-  }, [phase, currentQ])
+  }, [phase, currentQ, shuffledQuestions])
 
   const handlePlayAgain = () => {
     setCurrentQ(0)
     setScore(0)
     setPhase('question')
     setSelectedAnswer(null)
-    setWasCorrect(null)
     setKey(k => k + 1)
+    setShuffledQuestions(questions.map(q => ({ ...q, options: shuffle(q.options) })))
   }
 
   if (phase === 'result') {
@@ -51,19 +52,19 @@ export default function QuizDesafioQualidade() {
           label={result.label}
           tier={result.tier}
           score={score}
-          total={questions.length}
+          total={shuffledQuestions.length}
           onPlayAgain={handlePlayAgain}
         />
       </QuizLayout>
     )
   }
 
-  const q = questions[currentQ]
+  const q = shuffledQuestions[currentQ]
 
   return (
     <QuizLayout title="Desafio da Qualidade" theme="quality">
       <div className="dq-container">
-        <ProgressBar total={questions.length} current={currentQ} />
+        <ProgressBar total={shuffledQuestions.length} current={currentQ} />
 
         <div className="dq-question" key={key}>
           <span className="dq-question-number">Pergunta {currentQ + 1}</span>

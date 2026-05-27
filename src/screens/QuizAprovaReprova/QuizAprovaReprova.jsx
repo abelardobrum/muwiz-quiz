@@ -2,6 +2,7 @@ import { useState } from 'react'
 import QuizLayout from '../../components/QuizLayout/QuizLayout.jsx'
 import ResultScreen from '../../components/ResultScreen/ResultScreen.jsx'
 import { items, getResult } from '../../data/quizAprovaReprova.js'
+import { shuffle } from '../../utils/shuffle.js'
 import './QuizAprovaReprova.css'
 
 export default function QuizAprovaReprova() {
@@ -9,6 +10,7 @@ export default function QuizAprovaReprova() {
   const [submitted, setSubmitted] = useState(false)
   const [rejected, setRejected] = useState(null)
   const [showResult, setShowResult] = useState(false)
+  const [shuffledItems, setShuffledItems] = useState(() => shuffle(items))
 
   const handleToggle = (id) => {
     if (submitted) return
@@ -35,10 +37,11 @@ export default function QuizAprovaReprova() {
     setSubmitted(false)
     setRejected(null)
     setShowResult(false)
+    setShuffledItems(shuffle(items))
   }
 
   if (showResult) {
-    const correctCount = [...selected].filter(id => items.find(i => i.id === id)?.correct).length
+    const correctCount = [...selected].filter(id => shuffledItems.find(i => i.id === id)?.correct).length
     const result = getResult(correctCount)
     return (
       <QuizLayout title="Aprova ou Reprova" theme="aprova">
@@ -63,7 +66,7 @@ export default function QuizAprovaReprova() {
         </div>
 
         <div className="ar-items">
-          {items.map((item, i) => {
+          {shuffledItems.map((item, i) => {
             const isSelected = selected.has(item.id)
             const isRejected = rejected === item.id
             let revealState = ''

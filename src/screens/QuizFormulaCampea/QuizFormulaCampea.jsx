@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ResultScreen from '../../components/ResultScreen/ResultScreen.jsx'
 import { zones, getResult } from '../../data/quizFormulaCampea.js'
+import { shuffle } from '../../utils/shuffle.js'
 import jogadorImg from '../../assets/jogador.png'
 import acertoImg from '../../assets/acerto.png'
 import erroImg from '../../assets/erro.png'
@@ -45,16 +46,15 @@ export default function QuizFormulaCampea() {
   const [cardOverlay, setCardOverlay] = useState(null) // { type: 'yellow'|'red' } | null
   const [energy, setEnergy] = useState(0)
   const [timeLeft, setTimeLeft] = useState(60)
-  const [dragging, setDragging] = useState(null)
-  const [isOverField, setIsOverField] = useState(false)
   const [passHistory, setPassHistory] = useState([])  // acumulado — linhas persistem
   const [goalAnimation, setGoalAnimation] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
-
-  const fieldRef = useRef(null)
-  const ghostRef = useRef(null)
-  const dragDataRef = useRef(null)
-  const isOverFieldRef = useRef(false)
+  const [shuffledZones, setShuffledZones] = useState(() =>
+    zones.map(z => {
+      const order = shuffle([...Array(z.options.length).keys()])
+      return { ...z, options: order.map(i => z.options[i]), optionIcons: order.map(i => z.optionIcons[i]) }
+    })
+  )
 
   useEffect(() => {
     if (phase !== 'question') return
@@ -67,14 +67,14 @@ export default function QuizFormulaCampea() {
   }, [phase, timeLeft])
 
   const processAnswer = useCallback((option) => {
-    const correct = option === zones[currentZone].correct
+    const correct = option === shuffledZones[currentZone].correct
 
     if (correct) {
       setEnergy(e => Math.min(100, e + 25))
       setZoneState(prev => ({ ...prev, [currentZone]: 'correct' }))
       setScore(s => s + 1)
 
-      if (currentZone < zones.length - 1) {
+      if (currentZone < shuffledZones.length - 1) {
         setPassHistory(prev => [...prev, { from: currentZone, to: currentZone + 1 }])
       } else {
         setGoalAnimation(true)
@@ -83,7 +83,7 @@ export default function QuizFormulaCampea() {
 
       setPhase('feedback')
       setTimeout(() => {
-        if (currentZone + 1 >= zones.length) setPhase('result')
+        if (currentZone + 1 >= shuffledZones.length) setPhase('result')
         else { setCurrentZone(z => z + 1); setPhase('question') }
       }, 1400)
 
@@ -101,105 +101,51 @@ export default function QuizFormulaCampea() {
         if (cardType === 'red') {
           setPhase('result')
         } else {
-          if (currentZone < zones.length - 1) {
+          if (currentZone < shuffledZones.length - 1) {
             setPassHistory(prev => [...prev, { from: currentZone, to: currentZone + 1 }])
           }
-          if (currentZone + 1 >= zones.length) setPhase('result')
+          if (currentZone + 1 >= shuffledZones.length) setPhase('result')
           else { setCurrentZone(z => z + 1); setPhase('question') }
         }
       }, 3000)
     }
-  }, [currentZone, errors])
+  }, [currentZone, errors, shuffledZones])
 
-  const handleCardPointerDown = useCallback((e, option) => {
+  const handleCardClick = useCallback((option) => {
     if (phase !== 'question') return
-    e.preventDefault()
-    const rect = e.currentTarget.getBoundingClientRect()
-    e.target.setPointerCapture(e.pointerId)
-    dragDataRef.current = { option, w: rect.width, h: rect.height }
-    setDragging(option)
-    const g = ghostRef.current
-    if (g) {
-      g.style.display = 'flex'
-      g.style.width = `${rect.width}px`
-      g.style.height = `${rect.height}px`
-      g.style.left = `${e.clientX - rect.width / 2}px`
-      g.style.top = `${e.clientY - rect.height / 2}px`
-    }
-  }, [phase])
-
-  const handlePointerMove = useCallback((e) => {
-    if (!dragDataRef.current) return
-    const { w, h } = dragDataRef.current
-    const g = ghostRef.current
-    if (g) {
-      g.style.left = `${e.clientX - w / 2}px`
-      g.style.top = `${e.clientY - h / 2}px`
-    }
-    const rect = fieldRef.current?.getBoundingClientRect()
-    const over = !!(rect &&
-      e.clientX >= rect.left && e.clientX <= rect.right &&
-      e.clientY >= rect.top && e.clientY <= rect.bottom)
-    if (over !== isOverFieldRef.current) {
-      isOverFieldRef.current = over
-      setIsOverField(over)
-    }
-  }, [])
-
-  const handlePointerUp = useCallback(() => {
-    if (!dragDataRef.current) return
-    const g = ghostRef.current
-    if (g) g.style.display = 'none'
-    if (isOverFieldRef.current) {
-      processAnswer(dragDataRef.current.option)
-    }
-    dragDataRef.current = null
-    setDragging(null)
-    setIsOverField(false)
-    isOverFieldRef.current = false
-  }, [processAnswer])
+    processAnswer(option)
+  }, [phase, processAnswer])
 
   const handlePlayAgain = () => {
     setCurrentZone(0); setScore(0); setPhase('question')
     setZoneState({}); setTimeLeft(60)
-    setDragging(null); setIsOverField(false)
     setErrors(0); setEnergy(0)
     setCardOverlay(null)
     setPassHistory([]); setGoalAnimation(false); setTimedOut(false)
-    dragDataRef.current = null
-    isOverFieldRef.current = false
+    setShuffledZones(zones.map(z => {
+      const order = shuffle([...Array(z.options.length).keys()])
+      return { ...z, options: order.map(i => z.options[i]), optionIcons: order.map(i => z.optionIcons[i]) }
+    }))
   }
 
-  const zone = zones[currentZone]
+  const zone = shuffledZones[currentZone]
   const result = phase === 'result'
     ? (timedOut
         ? { label: 'Tempo esgotado! Produto não finalizado.', icon: '⏱', tier: 'danger' }
         : getResult(errors))
     : null
 
-  const ghostIcon = dragging && zone
-    ? zone.optionIcons[zone.options.indexOf(dragging)]
-    : ''
-
   return (
-    <div
-      className="fc-screen"
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-    >
+    <div className="fc-screen">
       {/* Header */}
       <div className="fc-header">
-        <button className="fc-back" onClick={() => navigate('/')}>◀ Voltar</button>
         <h1 className="fc-title">Fórmula Campeã ⚽</h1>
-        <div className="fc-header-spacer" />
       </div>
 
       {/* Campo */}
       <div
-        ref={fieldRef}
         className={[
           'fc-field',
-          isOverField ? 'fc-field--drop-active' : '',
           goalAnimation ? 'fc-field--goal' : '',
         ].filter(Boolean).join(' ')}
       >
@@ -218,7 +164,7 @@ export default function QuizFormulaCampea() {
 
         {/* Jogadores */}
         <div className="fc-players-layer">
-          {zones.map((z, i) => {
+          {shuffledZones.map((z, i) => {
             const pos = PLAYER_POSITIONS[i]
             const state = zoneState[i]
             const isCurrent = i === currentZone && phase !== 'result'
@@ -301,7 +247,7 @@ export default function QuizFormulaCampea() {
 
         {/* Progress dots */}
         <div className="fc-progress">
-          {zones.map((_, i) => (
+          {shuffledZones.map((_, i) => (
             <span
               key={i}
               className={[
@@ -342,8 +288,8 @@ export default function QuizFormulaCampea() {
             {zone.options.map((option, i) => (
               <div
                 key={option}
-                className={`fc-card ${dragging === option ? 'fc-card--dragging' : ''}`}
-                onPointerDown={e => handleCardPointerDown(e, option)}
+                className="fc-card"
+                onClick={() => handleCardClick(option)}
               >
                 <span className="fc-card-icon">{zone.optionIcons[i]}</span>
                 <span className="fc-card-text">{option}</span>
@@ -353,7 +299,7 @@ export default function QuizFormulaCampea() {
 
           <div className="fc-hint">
             <span>👆</span>
-            <span>Segure e arraste para o campo</span>
+            <span>Toque para selecionar a resposta</span>
           </div>
         </div>
       ) : (
@@ -370,18 +316,14 @@ export default function QuizFormulaCampea() {
 
       {/* Footer */}
       <div className="fc-footer">
-        <span>⚽ Passe {Math.min(currentZone + 1, zones.length)}/{zones.length}</span>
+        <button className="fc-back" onClick={() => navigate('/')}>◀ Voltar</button>
+        <span>⚽ Passe {Math.min(currentZone + 1, shuffledZones.length)}/{shuffledZones.length}</span>
         <span>✓ Acertos {score}</span>
         <span className={`fc-footer-time ${timeLeft <= 10 ? 'fc-footer-time--urgent' : ''}`}>
           ⏱ {formatTime(timeLeft)}
         </span>
       </div>
 
-      {/* Ghost de drag */}
-      <div className="fc-drag-ghost" ref={ghostRef}>
-        <span className="fc-card-icon">{ghostIcon}</span>
-        <span className="fc-card-text">{dragging}</span>
-      </div>
     </div>
   )
 }

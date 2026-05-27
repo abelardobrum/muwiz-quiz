@@ -114,7 +114,7 @@
   }
 
   .dq-question-number {
-    font-size: clamp(11px, 1.5vw, 16px);
+    font-size: clamp(20px, 1.5vw, 16px);
   }
 
   .dq-question-text {

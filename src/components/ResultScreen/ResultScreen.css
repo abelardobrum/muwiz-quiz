@@ -28,7 +28,7 @@
 
 .result-label {
   font-family: var(--font-arcade);
-  font-size: clamp(14px, 2.5vw, 32px);
+  font-size: clamp(50px, 2.5vw, 32px);
   text-align: center;
   line-height: 1.6;
   animation: result-enter 0.5s ease-out 0.2s both;
@@ -40,7 +40,7 @@
 
 .result-score {
   font-family: var(--font-body);
-  font-size: clamp(16px, 2.5vw, 28px);
+  font-size: clamp(40px, 2.5vw, 28px);
   font-weight: 700;
   color: var(--color-text-muted);
 }
@@ -55,11 +55,11 @@
 }
 
 .result-btn {
-  min-height: clamp(52px, 6vh, 80px);
-  padding: clamp(12px, 1.5vh, 20px) clamp(20px, 3vw, 48px);
+  min-height: clamp(65px, 7.5vh, 100px);
+  padding: clamp(15px, 1.875vh, 25px) clamp(25px, 3.75vw, 60px);
   border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-size: clamp(14px, 1.8vh, 20px);
+  font-size: clamp(18px, 2.25vh, 25px);
   font-weight: 900;
   cursor: pointer;
   border: 2px solid transparent;
