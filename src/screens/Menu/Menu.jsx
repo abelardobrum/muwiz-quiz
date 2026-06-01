@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import logoGameficado from '../../assets/logo-gameficado.png'
 import './Menu.css'
 
 const quizzes = [
@@ -34,8 +35,7 @@ export default function Menu() {
 
       <header className="menu-header">
         <div className="menu-logo">
-          <span className="menu-logo-muwiz">MUWIZ</span>
-          <span className="menu-logo-quiz">QUIZ</span>
+          <img src={logoGameficado} alt="Muwiz Quiz" className="menu-logo-img" />
         </div>
         <p className="menu-subtitle">Escolha seu desafio</p>
       </header>

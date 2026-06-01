@@ -28,7 +28,7 @@
 
 .result-label {
   font-family: var(--font-arcade);
-  font-size: clamp(50px, 2.5vw, 32px);
+  font-size: clamp(16px, 2vw, 28px);
   text-align: center;
   line-height: 1.6;
   animation: result-enter 0.5s ease-out 0.2s both;
@@ -40,7 +40,7 @@
 
 .result-score {
   font-family: var(--font-body);
-  font-size: clamp(40px, 2.5vw, 28px);
+  font-size: clamp(14px, 1.8vw, 22px);
   font-weight: 700;
   color: var(--color-text-muted);
 }
@@ -137,11 +137,20 @@
 }
 
 @media (orientation: portrait) {
+  .result-label {
+    font-size: clamp(20px, 3.5vw, 38px);
+  }
+
+  .result-score {
+    font-size: clamp(16px, 2.5vw, 28px);
+  }
+
   .result-actions {
     flex-direction: column;
     width: 100%;
     max-width: 400px;
   }
+
   .result-btn {
     width: 100%;
   }

@@ -1,16 +1,25 @@
 import { useState } from 'react'
 import QuizLayout from '../../components/QuizLayout/QuizLayout.jsx'
 import ResultScreen from '../../components/ResultScreen/ResultScreen.jsx'
-import { items, getResult } from '../../data/quizAprovaReprova.js'
+import { questions, getResult } from '../../data/quizAprovaReprova.js'
 import { shuffle } from '../../utils/shuffle.js'
 import './QuizAprovaReprova.css'
 
+function initQuestions() {
+  return questions.map(q => ({ ...q, options: shuffle([...q.options]) }))
+}
+
 export default function QuizAprovaReprova() {
+  const [shuffledQuestions, setShuffledQuestions] = useState(initQuestions)
+  const [currentQ, setCurrentQ] = useState(0)
   const [selected, setSelected] = useState(new Set())
   const [submitted, setSubmitted] = useState(false)
   const [rejected, setRejected] = useState(null)
+  const [totalCorrect, setTotalCorrect] = useState(0)
   const [showResult, setShowResult] = useState(false)
-  const [shuffledItems, setShuffledItems] = useState(() => shuffle(items))
+
+  const question = shuffledQuestions[currentQ]
+  const total = shuffledQuestions.length
 
   const handleToggle = (id) => {
     if (submitted) return
@@ -28,28 +37,39 @@ export default function QuizAprovaReprova() {
 
   const handleConfirm = () => {
     if (selected.size !== 2) return
+    const correct = question.options.filter(o => selected.has(o.id) && o.correct).length
+    setTotalCorrect(prev => prev + correct)
     setSubmitted(true)
-    setTimeout(() => setShowResult(true), 1800)
+    setTimeout(() => {
+      if (currentQ + 1 >= total) {
+        setShowResult(true)
+      } else {
+        setCurrentQ(q => q + 1)
+        setSelected(new Set())
+        setSubmitted(false)
+      }
+    }, 1800)
   }
 
   const handlePlayAgain = () => {
+    setShuffledQuestions(initQuestions())
+    setCurrentQ(0)
     setSelected(new Set())
     setSubmitted(false)
     setRejected(null)
+    setTotalCorrect(0)
     setShowResult(false)
-    setShuffledItems(shuffle(items))
   }
 
   if (showResult) {
-    const correctCount = [...selected].filter(id => shuffledItems.find(i => i.id === id)?.correct).length
-    const result = getResult(correctCount)
+    const result = getResult(totalCorrect)
     return (
       <QuizLayout title="Aprova ou Reprova" theme="aprova">
         <ResultScreen
           label={result.label}
           tier={result.tier}
-          score={correctCount}
-          total={2}
+          score={totalCorrect}
+          total={total * 2}
           onPlayAgain={handlePlayAgain}
         />
       </QuizLayout>
@@ -60,19 +80,18 @@ export default function QuizAprovaReprova() {
     <QuizLayout title="Aprova ou Reprova" theme="aprova">
       <div className="ar-container">
         <div className="ar-instructions">
-          <p className="ar-title">Selecione as respostas corretas</p>
-          <p className="ar-hint">Apenas 2 opções são corretas</p>
+          <div className="ar-progress">Pergunta {currentQ + 1} de {total}</div>
+          <p className="ar-question">{question.question}</p>
+          <p className="ar-hint">Selecione as 2 respostas corretas</p>
           <div className="ar-counter">{selected.size} / 2 selecionadas</div>
         </div>
 
         <div className="ar-items">
-          {shuffledItems.map((item, i) => {
+          {question.options.map((item, i) => {
             const isSelected = selected.has(item.id)
             const isRejected = rejected === item.id
             let revealState = ''
-            if (submitted) {
-              revealState = item.correct ? 'correct' : 'wrong'
-            }
+            if (submitted) revealState = item.correct ? 'correct' : 'wrong'
             return (
               <button
                 key={item.id}

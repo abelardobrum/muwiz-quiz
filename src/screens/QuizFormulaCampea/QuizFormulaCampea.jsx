@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ResultScreen from '../../components/ResultScreen/ResultScreen.jsx'
 import { zones, getResult } from '../../data/quizFormulaCampea.js'
 import { shuffle } from '../../utils/shuffle.js'
+import simbolo from '../../assets/simbolo-game.png'
 import jogadorImg from '../../assets/jogador.png'
 import acertoImg from '../../assets/acerto.png'
 import erroImg from '../../assets/erro.png'
@@ -139,7 +140,10 @@ export default function QuizFormulaCampea() {
     <div className="fc-screen">
       {/* Header */}
       <div className="fc-header">
-        <h1 className="fc-title">Fórmula Campeã ⚽</h1>
+        <h1 className="fc-title">
+          <img src={simbolo} alt="" className="fc-title-symbol" aria-hidden="true" />
+          Fórmula Campeã
+        </h1>
       </div>
 
       {/* Campo */}
@@ -296,11 +300,6 @@ export default function QuizFormulaCampea() {
               </div>
             ))}
           </div>
-
-          <div className="fc-hint">
-            <span>👆</span>
-            <span>Toque para selecionar a resposta</span>
-          </div>
         </div>
       ) : (
         <div className="fc-result-area">
@@ -308,7 +307,6 @@ export default function QuizFormulaCampea() {
             label={result.label}
             icon={result.icon}
             tier={result.tier}
-            energy={energy}
             onPlayAgain={handlePlayAgain}
           />
         </div>

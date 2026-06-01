@@ -14,12 +14,19 @@
   flex-shrink: 0;
 }
 
-.ar-title {
+.ar-progress {
   font-family: var(--font-arcade);
-  font-size: clamp(11px, 1.6vw, 18px);
+  font-size: clamp(9px, 1.2vw, 14px);
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
+
+.ar-question {
+  font-family: var(--font-arcade);
+  font-size: clamp(12px, 1.7vw, 20px);
   color: var(--color-text);
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .ar-hint {
@@ -195,8 +202,12 @@
     margin: 0 auto;
   }
 
-  .ar-title {
-    font-size: clamp(14px, 2.2vw, 26px);
+  .ar-progress {
+    font-size: clamp(11px, 1.6vw, 18px);
+  }
+
+  .ar-question {
+    font-size: clamp(15px, 2.6vw, 30px);
   }
 
   .ar-hint {
