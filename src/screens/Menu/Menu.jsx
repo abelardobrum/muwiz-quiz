@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import logoGameficado from '../../assets/logo-gameficado.png'
+import logoGameficado from '../../assets/muwiz-logo-quiz.png'
 import './Menu.css'
 
 const quizzes = [
