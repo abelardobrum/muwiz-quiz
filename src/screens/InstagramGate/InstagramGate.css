@@ -1,0 +1,136 @@
+.ig-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  overflow: hidden;
+  padding: clamp(16px, 3vw, 48px);
+}
+
+.ig-scanline {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  z-index: 10;
+}
+
+.ig-back {
+  position: absolute;
+  top: clamp(12px, 2vh, 24px);
+  left: clamp(12px, 2vw, 24px);
+  font-family: var(--font-arcade);
+  font-size: clamp(8px, 1vw, 11px);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+  z-index: 20;
+}
+
+.ig-back:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ig-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 3vh, 36px);
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+}
+
+.ig-title {
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.6vw, 18px);
+  color: var(--color-text);
+  line-height: 1.8;
+  text-shadow: 0 0 16px rgba(124, 63, 184, 0.8);
+}
+
+.ig-qr-wrapper {
+  padding: clamp(10px, 2vw, 20px);
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glow-purple);
+}
+
+.ig-qr {
+  display: block;
+  width: clamp(140px, 28vw, 260px);
+  height: clamp(140px, 28vw, 260px);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.ig-handle {
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.4vw, 16px);
+  color: var(--color-accent-light);
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(107, 179, 74, 0.7);
+}
+
+.ig-play-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(12px, 2vh, 20px) clamp(24px, 4vw, 48px);
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.4vw, 15px);
+  color: #fff;
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 4px 0 #3a6b2e, var(--shadow-glow-green);
+  transition:
+    transform var(--press-duration) ease,
+    box-shadow var(--press-duration) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ig-play-btn:active {
+  transform: scale(var(--press-scale)) translateY(2px);
+  box-shadow: 0 2px 0 #3a6b2e, var(--shadow-glow-green);
+}
+
+.ig-play-icon {
+  font-size: 0.9em;
+}
+
+@media (orientation: portrait) {
+  .ig-title {
+    font-size: clamp(9px, 3.2vw, 14px);
+  }
+
+  .ig-qr {
+    width: clamp(160px, 50vw, 260px);
+    height: clamp(160px, 50vw, 260px);
+  }
+
+  .ig-handle {
+    font-size: clamp(9px, 2.8vw, 14px);
+  }
+
+  .ig-play-btn {
+    font-size: clamp(9px, 2.6vw, 13px);
+    padding: clamp(12px, 3vh, 18px) clamp(20px, 6vw, 40px);
+  }
+}

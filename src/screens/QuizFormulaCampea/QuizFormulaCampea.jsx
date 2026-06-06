@@ -310,6 +310,7 @@ export default function QuizFormulaCampea() {
             onPlayAgain={handlePlayAgain}
           />
         </div>
+        
       )}
 
       {/* Footer */}

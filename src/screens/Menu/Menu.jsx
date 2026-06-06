@@ -46,7 +46,7 @@ export default function Menu() {
             key={q.to}
             className={`menu-card menu-card--${q.color}`}
             style={{ animationDelay: `${i * 0.15}s` }}
-            onClick={() => navigate(q.to)}
+            onClick={() => navigate(`/instagram?next=${q.to}`)}
           >
             <span className="menu-card-icon">{q.icon}</span>
             <span className="menu-card-title">{q.title}</span>
