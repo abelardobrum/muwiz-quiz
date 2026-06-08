@@ -27,23 +27,25 @@
 
 .ig-back {
   position: absolute;
-  top: clamp(12px, 2vh, 24px);
+  bottom: clamp(12px, 2vh, 24px);
   left: clamp(12px, 2vw, 24px);
   font-family: var(--font-arcade);
   font-size: clamp(8px, 1vw, 11px);
   color: var(--color-text-muted);
-  background: none;
-  border: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
   cursor: pointer;
-  padding: 8px 12px;
+  padding: clamp(8px, 1vh, 14px) clamp(12px, 1.5vw, 20px);
   border-radius: var(--radius-sm);
-  transition: color 0.15s, background 0.15s;
+  transition: transform var(--press-duration) ease;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
   z-index: 20;
 }
 
-.ig-back:hover {
-  color: var(--color-text);
-  background: rgba(255, 255, 255, 0.06);
+.ig-back:active {
+  transform: scale(var(--press-scale));
 }
 
 .ig-content {
@@ -131,6 +133,6 @@
 
   .ig-play-btn {
     font-size: clamp(9px, 2.6vw, 13px);
-    padding: clamp(12px, 3vh, 18px) clamp(20px, 6vw, 40px);
+    padding: clamp(12px, 3vh, 30px) clamp(20px, 6vw, 40px);
   }
 }
